@@ -63,8 +63,16 @@ async function generatePdf(request, response) {
     });
 }
 
-app.use('/', (req, res) => {
+app.get('/Create', (req, res) => {
+
+    // res.send('Welcome..')
 
     generatePdf(req, res)
+});
+app.use('/', (req, res) => {
+
+    res.send('Welcome..')
+
+    // generatePdf(req, res)
 });
 app.listen((process.env.PORT || 3200) /* '10.123.56.203', */, () => console.log(' Server is ready on :' + (process.env.PORT || 3200)));
