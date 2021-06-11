@@ -47,10 +47,11 @@ async function generatePdf(request, response) {
         // We set the page content as the generated html by handlebars
         await page.setContent(html)
         // We use pdf function to generate the pdf in the same folder as this file.
-        const document = await page.pdf({ path: 'invoice.pdf', format: 'A4' })
+        await page.pdf({ path: 'invoice.pdf', format: 'A4' })
         await browser.close();
         console.log("PDF Generated")
 
+        fs.readFileSync(path.join(__dirname, '/notifications.pdf'), 'utf8');
         var stat = fs.statSync(path.join(__dirname, '/invoice.pdf'));
 		response.setHeader('Content-Length', stat.size);
 		response.setHeader('Content-Type', 'application/pdf');
