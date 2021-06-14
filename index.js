@@ -11,9 +11,9 @@ app.use(express.json());
 const fs = require('fs')
 const path = require('path')
 const utils = require('util')
-let puppeteer;
+//const chrome = require('chrome-aws-lambda');
  
-// const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer');
 /*
 https://openbase.com/js/puppeteer-core/versions ---> FOR browserFetcher.download('[version]')
 
@@ -31,7 +31,7 @@ Chromium 83.0.4103.0 - Puppeteer v3.1.0
 Chromium 81.0.4044.0 - Puppeteer v3.0.0
 */
 
-let revisionInfo; // GLOBAL INSTALLED VERSION
+// let revisionInfo; // GLOBAL INSTALLED VERSION
 console.log('INIT puppeteer')
 if (process.env.PORT) {
     (async () => {
@@ -102,10 +102,12 @@ async function generatePdf(request, response) {
             console.log('With sandbox')
             
         }else {
+
             browser = await puppeteer.launch({
                 executablePath: '/usr/bin/google-chrome-stable',
-				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
+				        args: ['--no-sandbox', "--disabled-setupid-sandbox"],
             })
+
             console.log('With OUT sandbox')
         }
         const page = await browser.newPage()
