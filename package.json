@@ -18,7 +18,6 @@
     "express": "^4.17.1",
     "handlebars": "^4.7.6",
     "puppeteer-core": "^10.0.0",
-    "puppeteer": "^10.0.0"
   },
   "devDependencies": {}
 }

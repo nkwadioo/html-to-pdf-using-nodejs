@@ -11,18 +11,19 @@ app.use(express.json());
 const fs = require('fs')
 const path = require('path')
 const utils = require('util')
-let puppeteer;
+const chrome = require('chrome-aws-lambda');
  
 // const puppeteer = require('puppeteer');
+let puppeteer;
 /*
-https://openbase.com/js/puppeteer-core/versions ---> FOR browserFetcher.download('[version]')
+https://openbase.com/js/puppeteer-core/versions
 
-Chromium 92.0.4512.0 - Puppeteer v10.0.0  -- r 884014
+Chromium 92.0.4512.0 - Puppeteer v10.0.0
 Chromium 91.0.4469.0 - Puppeteer v9.0.0
 Chromium 90.0.4427.0 - Puppeteer v8.0.0
 Chromium 90.0.4403.0 - Puppeteer v7.0.0
 Chromium 89.0.4389.0 - Puppeteer v6.0.0
-Chromium 88.0.4298.0 - Puppeteer v5.5.0  -- r 818858
+Chromium 88.0.4298.0 - Puppeteer v5.5.0
 Chromium 87.0.4272.0 - Puppeteer v5.4.0
 Chromium 86.0.4240.0 - Puppeteer v5.3.0
 Chromium 85.0.4182.0 - Puppeteer v5.2.1
@@ -31,17 +32,17 @@ Chromium 83.0.4103.0 - Puppeteer v3.1.0
 Chromium 81.0.4044.0 - Puppeteer v3.0.0
 */
 
-let revisionInfo; // GLOBAL INSTALLED VERSION
+// let revisionInfo; // GLOBAL INSTALLED VERSION
 console.log('INIT puppeteer')
 if (process.env.PORT) {
     (async () => {
 
         try {
             puppeteer = require('puppeteer-core');
-            console.log('TRYING TO FETCH BROWSER')
-            const browserFetcher = puppeteer.createBrowserFetcher();
-            revisionInfo = await browserFetcher.download('818858');
-            console.log('BROWSER fetched successfully');
+            // console.log('TRYING TO FETCH BROWSER')
+            // const browserFetcher = puppeteer.createBrowserFetcher();
+            // revisionInfo = await browserFetcher.download('818858');
+            // console.log('BROWSER fetched successfully');
         }catch (error) {
             console.log(error)
         }
@@ -102,10 +103,12 @@ async function generatePdf(request, response) {
             console.log('With sandbox')
             
         }else {
-            browser = await puppeteer.launch({
-                executablePath: revisionInfo.executablePath,
-				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
-            })
+            browser = await puppeteer.launch(
+                {
+                    executablePath: revisionInfo.executablePath,
+                    args: ['--no-sandbox', "--disabled-setupid-sandbox"],
+                }
+            )
             console.log('With OUT sandbox')
         }
         const page = await browser.newPage()
