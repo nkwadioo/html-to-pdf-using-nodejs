@@ -33,6 +33,23 @@ Chromium 81.0.4044.0 - Puppeteer v3.0.0
 
 let revisionInfo; // GLOBAL INSTALLED VERSION
 console.log('INIT puppeteer')
+if (process.env.PORT) {
+    (async () => {
+
+        try {
+            puppeteer = require('puppeteer-core');
+            console.log('TRYING TO FETCH BROWSER')
+            const browserFetcher = puppeteer.createBrowserFetcher();
+            revisionInfo = await browserFetcher.download('818858');
+            console.log('BROWSER fetched successfully');
+        }catch (error) {
+            console.log(error)
+        }
+    })();
+}else {
+    puppeteer = require('puppeteer');
+}
+
 
 async function openBrowser() {
     
@@ -79,17 +96,12 @@ async function generatePdf(request, response) {
         // let browser = await openBrowser();
         let browser;
 
-        //console.log('browser-path',puppeteer.executablePath());
+        console.log('LOADING ... browser');
         if (!process.env.PORT) {
-            puppeteer = require('puppeteer');
             browser = await puppeteer.launch();
             console.log('With sandbox')
             
         }else {
-            puppeteer = require('puppeteer-core');
-            console.log('TRYING TO FETCH BROWSER')
-            const browserFetcher = puppeteer.createBrowserFetcher();
-            revisionInfo = await browserFetcher.download('818858');
             browser = await puppeteer.launch({
                 executablePath: revisionInfo.executablePath,
 				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
