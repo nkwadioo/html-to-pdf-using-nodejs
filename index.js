@@ -42,7 +42,17 @@ async function generatePdf(request, response) {
         // We can use this to add dynamic data to our handlebar template at run time from database or API as per need. you can read the official doc to learn more https://handlebarsjs.com/
         const html = result;
         // we are using headless mode
-        const browser = await puppeteer.launch();
+        let browser;
+        console.log('browser-path',puppeteer.executablePath());
+        if (!process.env.PORT) {
+            browser = await puppeteer.launch();
+
+        }else {
+            browser = await puppeteer.launch({
+                executablePath: puppeteer.executablePath(),
+				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
+            })
+        }
         const page = await browser.newPage()
         // We set the page content as the generated html by handlebars
         await page.setContent(html)
@@ -51,12 +61,12 @@ async function generatePdf(request, response) {
         await browser.close();
         console.log("PDF Generated")
 
-        fs.readFileSync(path.join(__dirname, '/notifications.pdf'), 'utf8');
+        let document = fs.readFileSync(path.join(__dirname, '/invoice.pdf'), 'utf8').toString();
         var stat = fs.statSync(path.join(__dirname, '/invoice.pdf'));
 		response.setHeader('Content-Length', stat.size);
 		response.setHeader('Content-Type', 'application/pdf');
 		response.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
-        return response.send(document.toString()).status(200)
+        return response.send(document).status(200)
     }).catch(err => {
         console.error(err)
         return response.send(err).status(400)
@@ -71,7 +81,7 @@ app.get('/Create', (req, res) => {
 });
 app.use('/', (req, res) => {
 
-    res.send('Welcome..')
+    return res.send('Welcome..')
 
     // generatePdf(req, res)
 });
