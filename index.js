@@ -11,8 +11,12 @@ app.use(express.json());
 const fs = require('fs')
 const path = require('path')
 const utils = require('util')
-const puppeteer = require('puppeteer');
+let puppeteer;
+ 
+// const puppeteer = require('puppeteer');
 /*
+https://openbase.com/js/puppeteer-core/versions
+
 Chromium 92.0.4512.0 - Puppeteer v10.0.0
 Chromium 91.0.4469.0 - Puppeteer v9.0.0
 Chromium 90.0.4427.0 - Puppeteer v8.0.0
@@ -27,21 +31,27 @@ Chromium 83.0.4103.0 - Puppeteer v3.1.0
 Chromium 81.0.4044.0 - Puppeteer v3.0.0
 */
 
-// let revisionInfo; // GLOBAL INSTALLED VERSION
-// if (process.env.PORT) {
-//     (async () => {
-//         try {
-//             console.log('TRYING TO FETCH BROWSER')
-//             const browserFetcher = puppeteer.createBrowserFetcher();
-//             revisionInfo = await browserFetcher.download('88.0.4298.0');
-//             console.log('BROWSER fetched successfully');
-//         }catch (error) {
-//             console.log(error)
-//         }
-//     })();
-// }
+let revisionInfo; // GLOBAL INSTALLED VERSION
+if (process.env.PORT) {
+    (async () => {
+
+        try {
+            puppeteer = require('puppeteer-core');
+            console.log('TRYING TO FETCH BROWSER')
+            const browserFetcher = puppeteer.createBrowserFetcher();
+            revisionInfo = await browserFetcher.download('818858');
+            console.log('BROWSER fetched successfully');
+        }catch (error) {
+            console.log(error)
+        }
+    })();
+}else {
+    puppeteer = require('puppeteer');
+}
+
+
 async function openBrowser() {
-    console.log('browser-path',puppeteer.executablePath());
+    
     if (!process.env.PORT) {
         var executablePath = puppeteer.executablePath()
     } else {
@@ -85,17 +95,18 @@ async function generatePdf(request, response) {
         // let browser = await openBrowser();
         let browser;
 
-        // if (!process.env.PORT) {
+        console.log('browser-path',puppeteer.executablePath());
+        if (!process.env.PORT) {
             browser = await puppeteer.launch();
-            console.log('Browser created without path')
-
-        // }else {
-        //     browser = await puppeteer.launch({
-        //         executablePath: revisionInfo.executablePath,
-		// 		// args: ['--no-sandbox', "--disabled-setupid-sandbox"],
-        //     })
-        //     console.log('Browser created from path')
-        // }
+            console.log('With sandbox')
+            
+        }else {
+            browser = await puppeteer.launch({
+                executablePath: revisionInfo.executablePath,
+				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
+            })
+            console.log('With OUT sandbox')
+        }
         const page = await browser.newPage()
         // We set the page content as the generated html by handlebars
         await page.setContent(html)
