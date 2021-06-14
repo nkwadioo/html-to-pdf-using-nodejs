@@ -40,8 +40,8 @@ if (process.env.PORT) {
         try {
             puppeteer = require('puppeteer-core');
             // console.log('TRYING TO FETCH BROWSER')
-            // const browserFetcher = puppeteer.createBrowserFetcher();
-            // revisionInfo = await browserFetcher.download('818858');
+            const browserFetcher = puppeteer.createBrowserFetcher();
+            revisionInfo = await browserFetcher.download('884014');
             // console.log('BROWSER fetched successfully');
         }catch (error) {
             console.log(error)
