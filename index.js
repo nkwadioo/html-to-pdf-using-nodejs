@@ -44,15 +44,15 @@ async function generatePdf(request, response) {
         // we are using headless mode
         let browser;
         console.log('browser-path',puppeteer.executablePath());
-        if (!process.env.PORT) {
+        // if (!process.env.PORT) {
             browser = await puppeteer.launch();
 
-        }else {
-            browser = await puppeteer.launch({
-                executablePath: puppeteer.executablePath(),
-				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
-            })
-        }
+        // }else {
+        //     browser = await puppeteer.launch({
+        //         executablePath: puppeteer.executablePath(),
+		// 		args: ['--no-sandbox', "--disabled-setupid-sandbox"],
+        //     })
+        // }
         const page = await browser.newPage()
         // We set the page content as the generated html by handlebars
         await page.setContent(html)
@@ -61,12 +61,14 @@ async function generatePdf(request, response) {
         await browser.close();
         console.log("PDF Generated")
 
-        let document = fs.readFileSync(path.join(__dirname, '/invoice.pdf'), 'utf8').toString();
+        // let document = fs.readFileSync(path.join(__dirname, '/invoice.pdf'), 'utf8').toString();
+        let document = fs.createReadStream((path.join(__dirname, '/invoice.pdf')));
         var stat = fs.statSync(path.join(__dirname, '/invoice.pdf'));
 		response.setHeader('Content-Length', stat.size);
 		response.setHeader('Content-Type', 'application/pdf');
 		response.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
-        return response.send(document).status(200)
+        document.pipe(response);
+        // return response.send(document).status(200)
     }).catch(err => {
         console.error(err)
         return response.send(err).status(400)
