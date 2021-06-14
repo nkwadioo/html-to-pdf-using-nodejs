@@ -103,7 +103,7 @@ async function generatePdf(request, response) {
             
         }else {
             browser = await puppeteer.launch({
-                executablePath: revisionInfo.executablePath,
+                executablePath: '/usr/bin/google-chrome-stable',
 				args: ['--no-sandbox', "--disabled-setupid-sandbox"],
             })
             console.log('With OUT sandbox')
