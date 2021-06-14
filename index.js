@@ -79,7 +79,7 @@ async function generatePdf(request, response) {
         // let browser = await openBrowser();
         let browser;
 
-        console.log('browser-path',puppeteer.executablePath());
+        //console.log('browser-path',puppeteer.executablePath());
         if (!process.env.PORT) {
             puppeteer = require('puppeteer');
             browser = await puppeteer.launch();
