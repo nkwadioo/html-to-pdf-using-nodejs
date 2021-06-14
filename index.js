@@ -14,6 +14,7 @@ const utils = require('util')
 // const chrome = require('chrome-aws-lambda');
  
 // const puppeteer = require('puppeteer');
+debugger
 let puppeteer;
 /*
 https://openbase.com/js/puppeteer-core/versions
