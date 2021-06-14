@@ -27,19 +27,31 @@ Chromium 83.0.4103.0 - Puppeteer v3.1.0
 Chromium 81.0.4044.0 - Puppeteer v3.0.0
 */
 
-let revisionInfo; // GLOBAL INSTALLED VERSION
-if (process.env.PORT) {
-    (async () => {
-        try {
-            console.log('TRYING TO FETCH BROWSER')
-            const browserFetcher = puppeteer.createBrowserFetcher();
-            revisionInfo = await browserFetcher.download('88.0.4298.0');
-            console.log('BROWSER fetched successfully');
-        }catch (error) {
-            console.log(error)
-        }
-    })();
+// let revisionInfo; // GLOBAL INSTALLED VERSION
+// if (process.env.PORT) {
+//     (async () => {
+//         try {
+//             console.log('TRYING TO FETCH BROWSER')
+//             const browserFetcher = puppeteer.createBrowserFetcher();
+//             revisionInfo = await browserFetcher.download('88.0.4298.0');
+//             console.log('BROWSER fetched successfully');
+//         }catch (error) {
+//             console.log(error)
+//         }
+//     })();
+// }
+async function openBrowser() {
+    console.log('browser-path',puppeteer.executablePath());
+    if (!process.env.PORT) {
+        var executablePath = puppeteer.executablePath()
+    } else {
+        var executablePath = puppeteer.executablePath().replace("app.asar", "app.asar.unpacked")
+    }
+    const browser = await puppeteer.launch({ executablePath: executablePath });
+
+    return browser
 }
+
 const hb = require('handlebars')
 
 
@@ -69,20 +81,21 @@ async function generatePdf(request, response) {
         const result = template(data);
         // We can use this to add dynamic data to our handlebar template at run time from database or API as per need. you can read the official doc to learn more https://handlebarsjs.com/
         const html = result;
-        // we are using headless mode
+        // configer browser 
+        // let browser = await openBrowser();
         let browser;
-        console.log('browser-path',puppeteer.executablePath());
-        if (!process.env.PORT) {
+
+        // if (!process.env.PORT) {
             browser = await puppeteer.launch();
             console.log('Browser created without path')
 
-        }else {
-            browser = await puppeteer.launch({
-                executablePath: revisionInfo.executablePath,
-				// args: ['--no-sandbox', "--disabled-setupid-sandbox"],
-            })
-            console.log('Browser created from path')
-        }
+        // }else {
+        //     browser = await puppeteer.launch({
+        //         executablePath: revisionInfo.executablePath,
+		// 		// args: ['--no-sandbox', "--disabled-setupid-sandbox"],
+        //     })
+        //     console.log('Browser created from path')
+        // }
         const page = await browser.newPage()
         // We set the page content as the generated html by handlebars
         await page.setContent(html)
