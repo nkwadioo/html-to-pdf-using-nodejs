@@ -11,7 +11,7 @@ app.use(express.json());
 const fs = require('fs')
 const path = require('path')
 const utils = require('util')
-const chrome = require('chrome-aws-lambda');
+// const chrome = require('chrome-aws-lambda');
  
 // const puppeteer = require('puppeteer');
 let puppeteer;
