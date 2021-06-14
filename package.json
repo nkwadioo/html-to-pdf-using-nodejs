@@ -20,6 +20,5 @@
     "puppeteer-core": "^5.5.0"
   },
   "devDependencies": {
-    "puppeteer": "^5.5.0"
   }
 }
